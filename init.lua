@@ -4,7 +4,7 @@
 
 
 bad_terrain = {}
-bad_terrain.version = "1.0"
+bad_terrain.version = "20171028"
 bad_terrain.path = minetest.get_modpath(minetest.get_current_modname())
 bad_terrain.world = minetest.get_worldpath()
 
