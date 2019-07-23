@@ -206,12 +206,12 @@ minetest.register_globalstep(function(dtime)
 		return
 	end
 
-  if #hot_and_poison_stuff ~= #hot_stuff + #poison_stuff then
-    hot_and_poison_stuff = table.copy(hot_stuff)
-    for _, i in pairs(poison_stuff) do
-      hot_and_poison_stuff[#hot_and_poison_stuff+1] = i
-    end
-  end
+	if #hot_and_poison_stuff ~= #hot_stuff + #poison_stuff then
+		hot_and_poison_stuff = table.copy(hot_stuff)
+		for _, i in pairs(poison_stuff) do
+			hot_and_poison_stuff[#hot_and_poison_stuff+1] = i
+		end
+	end
 
 	for i = 1, #players do
 		local player = players[i]
