@@ -4,9 +4,11 @@
 
 
 bad_terrain = {}
-bad_terrain.version = "20171028"
-bad_terrain.path = minetest.get_modpath(minetest.get_current_modname())
-bad_terrain.world = minetest.get_worldpath()
+mod = bad_terrain
+mod_name = 'bad_terrain'
+mod.version = "20171028"
+mod.path = minetest.get_modpath(minetest.get_current_modname())
+mod.world = minetest.get_worldpath()
 
 
 local DEBUG
@@ -31,11 +33,11 @@ local hot_and_poison_stuff = {}
 local gravity_off = {gravity = 0.1}
 local gravity_on = {gravity = 1}
 local sparking = {}
-bad_terrain.hot_stuff = hot_stuff
-bad_terrain.cold_stuff = cold_stuff
-bad_terrain.poison_stuff = poison_stuff
-bad_terrain.traps = traps
-bad_terrain.trap_functions = trap_f
+mod.hot_stuff = hot_stuff
+mod.cold_stuff = cold_stuff
+mod.poison_stuff = poison_stuff
+mod.traps = traps
+mod.trap_functions = trap_f
 
 trap_f['slippery_floor_trap'] = function(tpos, player, player_name)
   if not (tpos and player and player_name) then
@@ -185,6 +187,16 @@ minetest.add_group('default:dirt_with_snow', {surface_cold = 1})
 minetest.add_group('default:ice', {surface_cold = 1})
 
 
+local warmth
+if minetest.get_modpath('dinv') then
+	warmth = dinv.get_warmth
+else
+	warmth = function(player)
+		return 0
+	end
+end
+
+
 minetest.register_globalstep(function(dtime)
 	if not (dtime and type(dtime) == 'number') then
 		return
@@ -260,7 +272,7 @@ minetest.register_globalstep(function(dtime)
 
 				if #counts > 1 then
 					player:set_hp(player:get_hp() - 1)
-          minetest.chat_send_player(player_name, "This stuff is hot!")
+					minetest.chat_send_player(player_name, "This stuff is hot!")
 				end
 
 				-- ... from standing on or near cold objects (less often).
@@ -270,15 +282,15 @@ minetest.register_globalstep(function(dtime)
 						return
 					end
 
-					if #counts > 1 then
+					if #counts > 1 and warmth(player) < 1 then
 						player:set_hp(player:get_hp() - 1)
-            minetest.chat_send_player(player_name, "You're freezing.")
+						minetest.chat_send_player(player_name, "You're freezing.")
 					end
 				end
 
 				-- ... from hunger (even less often).
-				if dps_count % hunger_delay == 0 and bad_terrain.hunger_change then
-					bad_terrain.hunger_change(player, -1)
+				if dps_count % hunger_delay == 0 and mod.hunger_change then
+					mod.hunger_change(player, -1)
 				end
 			end
 		end
@@ -289,9 +301,9 @@ minetest.register_globalstep(function(dtime)
 		return
 	end
 
-	--local out = io.open(bad_terrain.world..'/bad_terrain_data.txt','w')	
+	--local out = io.open(mod.world..'/bad_terrain_data.txt','w')	
 	--if out then
-	--	out:write(minetest.serialize(bad_terrain.db))
+	--	out:write(minetest.serialize(mod.db))
 	--	out:close()
 	--end
 
